@@ -1,9 +1,12 @@
 import os
 from flask import Flask, render_template, request, jsonify
 import requests
+
 app = Flask(name)
+
 BOT_TOKEN = "8805942390:AAGdY9nKFMg3zqPzrJQHwmsufrS5QvYgthk"
 CHAT_ID = "1454432576"
+
 def send_telegram_message(text):
 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 requests.post(url, json={"chat_id": CHAT_ID, "text": text, "parse_mode": "Markdown"})
